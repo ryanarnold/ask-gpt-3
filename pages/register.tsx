@@ -1,9 +1,32 @@
+import axios from 'axios';
 import Head from 'next/head';
-import React from 'react';
+import React, { useState } from 'react';
 
 type Props = {};
 
 const RegisterPage = (props: Props) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegisterInfoChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const id = event.currentTarget?.id;
+    const value = event.currentTarget?.value;
+
+    if (id === 'inputName') {
+      setName(value);
+    } else if (id === 'inputEmail') {
+      setEmail(value);
+    } else if (id === 'inputPassword') {
+      setPassword(value);
+    }
+  };
+
+  const handleRegisterClick = async () => {
+    const response = await axios.post('/api/register', { email, password });
+    console.log(response.data);
+  };
+
   return (
     <>
       <Head>
@@ -13,7 +36,21 @@ const RegisterPage = (props: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1 className="text-5xl">Chat Page</h1>
+        <h1 className="text-5xl">Register</h1>
+        <input type="text" placeholder="Name" id="inputName" onChange={handleRegisterInfoChange} />
+        <input
+          type="text"
+          placeholder="Email"
+          id="inputEmail"
+          onChange={handleRegisterInfoChange}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          id="inputPassword"
+          onChange={handleRegisterInfoChange}
+        />
+        <button onClick={handleRegisterClick}>Register</button>
       </main>
     </>
   );
