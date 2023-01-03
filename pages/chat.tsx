@@ -22,7 +22,7 @@ const ChatPage = (props: Props) => {
         setUser(user);
       }
     });
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     initializeFirebase();
