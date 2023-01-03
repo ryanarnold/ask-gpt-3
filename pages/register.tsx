@@ -1,5 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 type Props = {};
@@ -8,6 +9,9 @@ const RegisterPage = (props: Props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const router = useRouter();
 
   const handleRegisterInfoChange = (event: React.FormEvent<HTMLInputElement>) => {
     const id = event.currentTarget?.id;
@@ -23,8 +27,18 @@ const RegisterPage = (props: Props) => {
   };
 
   const handleRegisterClick = async () => {
-    const response = await axios.post('/api/register', { email, password, name });
-    console.log(response.data);
+    axios
+      .post('/api/register', { email, password, name })
+      .then(() => {
+        router.push('/chat');
+      })
+      .catch((error) => {
+        if (error.response.data.code === 'auth/email-already-in-use') {
+          setError('Oops there is already an existing account with that email. Try logging in?');
+        } else {
+          setError('Oops there was a server error while processing your request.');
+        }
+      });
   };
 
   return (
@@ -51,6 +65,7 @@ const RegisterPage = (props: Props) => {
           onChange={handleRegisterInfoChange}
         />
         <button onClick={handleRegisterClick}>Register</button>
+        {error ? <p>{error}</p> : null}
       </main>
     </>
   );

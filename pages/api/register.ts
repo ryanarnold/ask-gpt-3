@@ -3,11 +3,7 @@ import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase
 import type { NextApiRequest, NextApiResponse } from 'next';
 import initializeFirebase from '../../common/init-firebase';
 
-type Data = {
-  name: string;
-};
-
-export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method === 'POST') {
     const email = req.body.email;
     const password = req.body.password;
@@ -23,12 +19,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         updateProfile(userCredential.user, {
           displayName: name,
         });
+
+        res.status(200).send('Success');
       })
       .catch((error: any) => {
         console.log(error.code);
         console.log(error.message);
+        res.status(500).send(error);
       });
   }
-
-  res.status(200).json({ name: 'John Doe' });
 }
