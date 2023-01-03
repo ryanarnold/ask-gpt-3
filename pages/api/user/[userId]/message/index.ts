@@ -8,12 +8,22 @@ type Data = {
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Message | string>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Message | Message[] | string>
+) {
   const { content, isGptResponse } = req.body;
   const { userId } = req.query;
 
   if (req.method === 'GET') {
-    res.status(200).send('he');
+    console.log(userId);
+    const messages = await prisma.message.findMany({
+      where: {
+        uid: userId as string,
+      },
+    });
+
+    res.status(200).json(messages);
   } else if (req.method === 'POST') {
     const message = await prisma.message.create({
       data: {

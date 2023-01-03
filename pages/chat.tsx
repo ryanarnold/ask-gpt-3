@@ -1,37 +1,47 @@
-import axios from 'axios';
+import axios, { responseEncoding } from 'axios';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import initializeFirebase from '../common/init-firebase';
 
 type Props = {};
 
+interface Message {
+  id: number;
+  content: string;
+  datetime: Date;
+  isGptResponse: boolean;
+}
+
 const ChatPage = (props: Props) => {
   const [user, setUser] = useState<User>();
   const [message, setMessage] = useState('');
+  const [messageLog, setMessageLog] = useState<Array<Message>>();
 
   const router = useRouter();
 
-  const handleMessageChange = (event: React.FormEvent<HTMLInputElement>) => {
-    if (event.currentTarget?.value) {
-      setMessage(event.currentTarget?.value);
-    }
-  };
-
-  const handleMessageSend = async () => {
+  const fetchMessages = useCallback(() => {
     axios
-      .post(`/api/user/${user?.uid}/message`, {
-        content: message,
-        isGptResponse: false,
-      })
+      .get(`/api/user/${user?.uid}/message`)
       .then((response) => {
-        console.log('message sent');
+        if (response.data.length > 0) {
+          setMessageLog(
+            response.data.map((msg: any) => {
+              return {
+                id: msg.id,
+                content: msg.content,
+                datetime: msg.datetime,
+                isGptResponse: msg.is_gpt_response,
+              };
+            })
+          );
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
-  };
+  }, [user]);
 
   useEffect(() => {
     initializeFirebase();
@@ -46,12 +56,39 @@ const ChatPage = (props: Props) => {
     });
   }, [router]);
 
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+
   const handleLogout = () => {
     initializeFirebase();
     const auth = getAuth();
     signOut(auth)
       .then(() => {
         router.push('/login');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleMessageChange = (event: React.FormEvent<HTMLInputElement>) => {
+    if (event.currentTarget?.value) {
+      setMessage(event.currentTarget?.value);
+    }
+  };
+
+  const handleMessageSend = async () => {
+    setMessage('');
+
+    axios
+      .post(`/api/user/${user?.uid}/message`, {
+        content: message,
+        isGptResponse: false,
+      })
+      .then((response) => {
+        console.log('message sent');
+        fetchMessages();
       })
       .catch((error) => {
         console.log(error);
@@ -79,6 +116,13 @@ const ChatPage = (props: Props) => {
                 value={message}
               />
               <button onClick={handleMessageSend}>Send</button>
+            </div>
+            <div>
+              {messageLog?.map((msg) => (
+                <div key={msg.id}>
+                  <p>{msg.content}</p>
+                </div>
+              ))}
             </div>
           </div>
         </main>

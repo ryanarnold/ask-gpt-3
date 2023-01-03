@@ -10,8 +10,6 @@ export default function initializeFirebase(): FirebaseApp {
     appId: '1:337595385722:web:b8272f356ebda5ba70f8c3',
   };
 
-  console.log(firebaseConfig);
-
   // Initialize Firebase
   return initializeApp(firebaseConfig);
 }
