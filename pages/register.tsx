@@ -23,7 +23,7 @@ const RegisterPage = (props: Props) => {
   };
 
   const handleRegisterClick = async () => {
-    const response = await axios.post('/api/register', { email, password });
+    const response = await axios.post('/api/register', { email, password, name });
     console.log(response.data);
   };
 

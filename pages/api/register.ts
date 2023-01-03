@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import initializeFirebase from '../../common/init-firebase';
 
@@ -11,6 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
   if (req.method === 'POST') {
     const email = req.body.email;
     const password = req.body.password;
+    const name = req.body.name;
 
     initializeFirebase();
     const auth = getAuth();
@@ -18,6 +19,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log('Signed in!');
+
+        updateProfile(userCredential.user, {
+          displayName: name,
+        });
       })
       .catch((error: any) => {
         console.log(error.code);
