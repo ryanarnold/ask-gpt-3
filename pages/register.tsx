@@ -1,7 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import initializeFirebase from '../common/init-firebase';
 
 type Props = {};
 
@@ -27,16 +28,25 @@ const RegisterPage = (props: Props) => {
   };
 
   const handleRegisterClick = async () => {
-    axios
-      .post('/api/register', { email, password, name })
-      .then(() => {
-        router.push('/chat');
+    initializeFirebase();
+    const auth = getAuth();
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log('Signed in!');
+
+        updateProfile(userCredential.user, {
+          displayName: name,
+        });
+
+        router.push('/login');
       })
-      .catch((error) => {
-        if (error.response.data.code === 'auth/email-already-in-use') {
-          setError('Oops there is already an existing account with that email. Try logging in?');
-        } else {
-          setError('Oops there was a server error while processing your request.');
+      .catch((error: any) => {
+        console.log(error.code);
+        console.log(error.message);
+
+        if (error.code === 'auth/email-already-in-use') {
+          setError('Email already in use. Try logging in?');
         }
       });
   };
