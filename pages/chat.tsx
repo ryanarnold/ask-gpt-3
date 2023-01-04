@@ -8,7 +8,7 @@ import initializeFirebase from '../common/init-firebase';
 type Props = {};
 
 interface Message {
-  id: number;
+  id?: number;
   content: string;
   datetime: Date;
   isGptResponse: boolean;
@@ -81,6 +81,16 @@ const ChatPage = (props: Props) => {
   const handleMessageSend = async () => {
     setMessage('');
 
+    if (messageLog && messageLog?.length > 0) {
+      const newMessageLog: Message = {
+        content: message,
+        isGptResponse: false,
+        datetime: new Date(),
+      };
+
+      setMessageLog([...messageLog, newMessageLog]);
+    }
+
     axios
       .post(`/api/user/${user?.uid}/message`, {
         content: message,
@@ -93,6 +103,12 @@ const ChatPage = (props: Props) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handlePressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleMessageSend();
+    }
   };
 
   if (user) {
@@ -113,7 +129,9 @@ const ChatPage = (props: Props) => {
                 type="text"
                 className="border"
                 onChange={handleMessageChange}
+                onKeyUp={handlePressEnter}
                 value={message}
+                autoFocus
               />
               <button onClick={handleMessageSend}>Send</button>
             </div>
