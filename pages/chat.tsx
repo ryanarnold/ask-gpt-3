@@ -1,10 +1,9 @@
-import axios, { responseEncoding } from 'axios';
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import axios from 'axios';
+import { User } from 'firebase/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { isAuthenticated, logout } from '../common/auth';
-import initializeFirebase from '../common/init-firebase';
 import logError from '../common/log-error';
 import AuthContext from '../contexts/auth-context';
 import useMessages from '../hooks/use-messages';
