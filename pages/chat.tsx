@@ -27,7 +27,7 @@ const ChatPage = (props: Props) => {
         router.push('/login');
       }
     );
-  }, [router]);
+  }, [router, setUser]);
 
   const fetchGptResponse = () => {
     axios
