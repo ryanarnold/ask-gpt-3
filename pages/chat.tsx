@@ -17,6 +17,7 @@ const ChatPage = (props: Props) => {
 
   const router = useRouter();
 
+  // Check if user is authenticated, if not, redirect to /login
   useEffect(() => {
     isAuthenticated(
       (user: User) => {
@@ -28,6 +29,7 @@ const ChatPage = (props: Props) => {
     );
   }, [router, setUser]);
 
+  // Generate a ChatGPT response after every message from the user
   const fetchGptResponse = () => {
     axios
       .post(`/api/user/${user?.uid}/response`, { prompt: message })
