@@ -68,5 +68,3 @@ export function register(
       failCallback(error);
     });
 }
-
-export default {};
