@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Message, PrismaClient } from '@prisma/client';
+import axios from 'axios';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const { prompt } = req.body;
     const { userId } = req.query;
 
-    const response = "Hi I'm ChatGPT";
+    const data = {
+      model: 'text-davinci-003',
+      prompt,
+      max_tokens: 1000,
+      top_p: 0.1,
+    };
+
+    const headers = {
+      Authorization: `Bearer ${process.env.GPT3_API_KEY}`,
+    };
+
+    const gpt3Response = await axios.post('https://api.openai.com/v1/completions', data, {
+      headers,
+    });
+
+    const gpt3Choices = gpt3Response.data.choices as Array<any>;
+    const response = gpt3Choices[0].text;
 
     const responseMessage = await prisma.message.create({
       data: {

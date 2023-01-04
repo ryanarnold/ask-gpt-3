@@ -12,7 +12,7 @@ datasource db {
 
 model Message {
   id              Int      @id @default(autoincrement())
-  content         String
+  content         String   @db.VarChar(1000)
   datetime        DateTime
   uid             String
   is_gpt_response Boolean
