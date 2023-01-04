@@ -1,9 +1,8 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import initializeFirebase from '../common/init-firebase';
+import { login } from '../common/auth';
 
 type Props = {};
 
@@ -26,17 +25,17 @@ const LoginPage = (props: Props) => {
   };
 
   const handleClickLogin = () => {
-    initializeFirebase();
-    const auth = getAuth();
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
+    login(
+      email,
+      password,
+      () => {
         router.push('/chat');
-      })
-      .catch((error) => {
-        console.log(error.code);
+      },
+      (error: any) => {
+        console.error(error.code);
         setError('Invalid email/password');
-      });
+      }
+    );
   };
 
   return (

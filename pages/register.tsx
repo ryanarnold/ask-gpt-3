@@ -1,9 +1,8 @@
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import initializeFirebase from '../common/init-firebase';
+import { register } from '../common/auth';
 
 type Props = {};
 
@@ -29,27 +28,22 @@ const RegisterPage = (props: Props) => {
   };
 
   const handleRegisterClick = async () => {
-    initializeFirebase();
-    const auth = getAuth();
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Signed in!');
-
-        updateProfile(userCredential.user, {
-          displayName: name,
-        });
-
+    register(
+      email,
+      password,
+      name,
+      () => {
         router.push('/login');
-      })
-      .catch((error: any) => {
+      },
+      (error: any) => {
         console.log(error.code);
         console.log(error.message);
 
         if (error.code === 'auth/email-already-in-use') {
           setError('Email already in use. Try logging in?');
         }
-      });
+      }
+    );
   };
 
   return (
