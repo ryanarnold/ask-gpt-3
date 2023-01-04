@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import initializeFirebase from '../common/init-firebase';
+import logError from '../common/log-error';
 
 type Props = {};
 
@@ -18,6 +19,7 @@ const ChatPage = (props: Props) => {
   const [user, setUser] = useState<User>();
   const [message, setMessage] = useState('');
   const [messageLog, setMessageLog] = useState<Array<Message>>();
+  const [gptTyping, setGptTyping] = useState(false);
 
   const router = useRouter();
 
@@ -42,6 +44,16 @@ const ChatPage = (props: Props) => {
         console.error(error);
       });
   }, [user]);
+
+  const fetchGptResponse = () => {
+    setGptTyping(true);
+
+    axios
+      .post(`/api/user/${user?.uid}/response`, { prompt: message })
+      .then(fetchMessages)
+      .catch(logError);
+    setGptTyping(false);
+  };
 
   useEffect(() => {
     initializeFirebase();
@@ -81,14 +93,16 @@ const ChatPage = (props: Props) => {
   const handleMessageSend = async () => {
     setMessage('');
 
-    if (messageLog && messageLog?.length > 0) {
-      const newMessageLog: Message = {
-        content: message,
-        isGptResponse: false,
-        datetime: new Date(),
-      };
+    const newMessage: Message = {
+      content: message,
+      isGptResponse: false,
+      datetime: new Date(),
+    };
 
-      setMessageLog([...messageLog, newMessageLog]);
+    if (messageLog && messageLog?.length > 0) {
+      setMessageLog([...messageLog, newMessage]);
+    } else {
+      setMessageLog([newMessage]);
     }
 
     axios
@@ -98,7 +112,8 @@ const ChatPage = (props: Props) => {
       })
       .then((response) => {
         console.log('message sent');
-        fetchMessages();
+        //fetchMessages();
+        fetchGptResponse();
       })
       .catch((error) => {
         console.log(error);
@@ -133,6 +148,7 @@ const ChatPage = (props: Props) => {
                 value={message}
                 autoFocus
               />
+
               <button onClick={handleMessageSend}>Send</button>
             </div>
             <div>
