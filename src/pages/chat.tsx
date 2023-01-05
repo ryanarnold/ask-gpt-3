@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { isAuthenticated, logout } from '../common/auth';
 import logError from '../common/log-error';
+import Button from '../components/button';
+import TextInput from '../components/text-input';
 import AuthContext from '../contexts/auth-context';
 import useMessages from '../hooks/use-messages';
 
@@ -38,9 +40,7 @@ const ChatPage = (props: Props) => {
   };
 
   const handleMessageChange = (event: React.FormEvent<HTMLInputElement>) => {
-    if (event.currentTarget?.value) {
-      setMessage(event.currentTarget?.value);
-    }
+    setMessage(event.currentTarget?.value);
   };
 
   const handlePressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,19 +72,17 @@ const ChatPage = (props: Props) => {
         </Head>
         <main>
           <h1 className="text-5xl">Chat Page</h1>
-          <button onClick={handleLogout}>Logout</button>
+          <Button clickHandler={handleLogout} text="Send" />
           <div>
             <div>
-              <input
-                type="text"
-                className="border"
-                onChange={handleMessageChange}
-                onKeyUp={handlePressEnter}
+              <TextInput
+                placeholder="Type a message..."
                 value={message}
-                autoFocus
+                changeHandler={handleMessageChange}
+                sendHandler={handlePressEnter}
               />
 
-              <button onClick={handleMessageSend}>Send</button>
+              <Button clickHandler={handleMessageSend} text="Send" />
             </div>
             <div>
               {messages?.map((msg) => (

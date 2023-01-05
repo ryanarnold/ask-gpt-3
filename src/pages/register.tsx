@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { register } from '../common/auth';
+import Button from '../components/button';
 
 type Props = {};
 
@@ -69,10 +70,8 @@ const RegisterPage = (props: Props) => {
           id="inputPassword"
           onChange={handleRegisterInfoChange}
         />
-        <button onClick={handleRegisterClick}>Register</button>
-        <Link href="/login">
-          <button>Login</button>
-        </Link>
+        <Button text="Register" clickHandler={handleRegisterClick} />
+        <Button isLink={true} href="/login" text="Login" />
         {error ? <p>{error}</p> : null}
       </main>
     </>
