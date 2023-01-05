@@ -81,8 +81,8 @@ const ChatPage = (props: Props) => {
     return (
       <>
         <Head>
-          <title>Ask Tim Ferris - Chat</title>
-          <meta name="description" content="Ask Tim Ferris - Chat Page" />
+          <title>Ask GPT-3 - Chat</title>
+          <meta name="description" content="Ask GPT-3 - Chat Page" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
@@ -150,7 +150,7 @@ const ChatPage = (props: Props) => {
     <>
       <Head>
         <title>Loading...</title>
-        <meta name="description" content="Ask Tim Ferris - Chat Page" />
+        <meta name="description" content="Ask GPT-3 - Chat Page" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
