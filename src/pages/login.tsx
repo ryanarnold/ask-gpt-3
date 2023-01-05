@@ -13,6 +13,7 @@ const LoginPage = (props: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -25,11 +26,13 @@ const LoginPage = (props: Props) => {
   };
 
   const handleClickLogin = () => {
+    setIsLoading(true);
     login(
       email,
       password,
       () => {
         router.push('/chat');
+        setIsLoading(false);
       },
       (error: any) => {
         console.error(error.code);
@@ -65,7 +68,7 @@ const LoginPage = (props: Props) => {
               </div>
               {error ? <p className="text-red-500">{error}</p> : null}
               <div className="mt-5 mb-2">
-                <Button clickHandler={handleClickLogin} text="Login" />
+                <Button clickHandler={handleClickLogin} text="Login" disabled={isLoading} />
               </div>
               <div>
                 <Button isLink={true} href="/register" text="Register" />

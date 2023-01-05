@@ -87,29 +87,30 @@ const ChatPage = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="h-screen ">
-          <div className="fixed top-0 grid w-full grid-cols-3">
+          <div
+            className="fixed top-10 grid h-[92%] w-full grid-cols-3 overflow-y-scroll"
+            ref={chatLog}
+          >
             <div></div>
-            <div>
-              <div className=" top-0 my-5 grid grid-cols-[3fr_1fr]">
-                <div>
-                  <h1 className="text-3xl font-bold">Chat with GPT-3</h1>
-                </div>
-                <div>
-                  <button
-                    className="text-md w-full rounded-lg bg-slate-100 p-3"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-              <div></div>
-            </div>
-          </div>
-          <div className="fixed top-10 grid h-full w-full grid-cols-3">
-            <div className="h-full "></div>
             <div className="h-full ">
-              <div className="mt-20 h-full " ref={chatLog}>
+              <div>
+                <div className="grid grid-cols-[3fr_1fr]">
+                  <div>
+                    <h1 className="text-3xl font-bold">Hi {user.displayName}, chat with GPT-3</h1>
+                  </div>
+                  <div>
+                    <button
+                      className="text-md w-full rounded-lg bg-slate-100 p-3"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+
+              <div className="mt-3 h-full ">
                 {messages.length > 0 ? (
                   messages?.map((msg) => (
                     <ChatBubble key={msg.id} text={msg.content} isGpt={msg.isGptResponse} />

@@ -14,6 +14,7 @@ const RegisterPage = (props: Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -43,12 +44,14 @@ const RegisterPage = (props: Props) => {
   };
 
   const handleRegisterClick = async () => {
+    setIsLoading(true);
     register(
       email,
       password,
       name,
       () => {
         router.push('/login');
+        setIsLoading(false);
       },
       (error: any) => {
         console.log(error.code);
@@ -91,7 +94,7 @@ const RegisterPage = (props: Props) => {
 
               {error ? <p>{error}</p> : null}
               <div className="mt-5 mb-2">
-                <Button text="Register" clickHandler={handleRegisterClick} />
+                <Button text="Register" clickHandler={handleRegisterClick} disabled={isLoading} />
               </div>
               <div>
                 <Button isLink={true} href="/login" text="Login" />

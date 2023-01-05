@@ -6,9 +6,14 @@ type Props = {
   clickHandler?: () => void;
   isLink?: boolean;
   href?: string;
+  disabled?: boolean;
 };
 
-function Button({ text, clickHandler, isLink, href }: Props) {
+function Button({ text, clickHandler, isLink, href, disabled }: Props) {
+  if (disabled === undefined) {
+    disabled = false;
+  }
+
   if (isLink && href) {
     return (
       <Link href={href}>
@@ -16,14 +21,26 @@ function Button({ text, clickHandler, isLink, href }: Props) {
       </Link>
     );
   } else {
-    return (
-      <button
-        className=" w-full rounded-lg bg-indigo-500 p-3 text-lg text-white"
-        onClick={clickHandler}
-      >
-        {text}
-      </button>
-    );
+    if (disabled) {
+      return (
+        <button
+          className=" w-full rounded-lg bg-indigo-200 p-3 text-lg text-white"
+          onClick={clickHandler}
+          disabled
+        >
+          {text}
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className=" w-full rounded-lg bg-indigo-500 p-3 text-lg text-white"
+          onClick={clickHandler}
+        >
+          {text}
+        </button>
+      );
+    }
   }
 }
 
