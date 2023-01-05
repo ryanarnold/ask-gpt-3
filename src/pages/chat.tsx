@@ -88,7 +88,7 @@ const ChatPage = (props: Props) => {
         </Head>
         <main className="h-screen ">
           <div
-            className="fixed top-10 grid h-[92%] w-full grid-cols-3 overflow-y-scroll"
+            className="fixed top-10 grid h-[92%] w-full overflow-y-scroll xl:grid-cols-[1fr_2fr_1fr] 2xl:grid-cols-3"
             ref={chatLog}
           >
             <div></div>
@@ -125,7 +125,7 @@ const ChatPage = (props: Props) => {
             <div></div>
           </div>
           <div className="fixed bottom-0 mb-5 w-screen bg-white">
-            <div className="grid grid-cols-3">
+            <div className="grid px-3 xl:grid-cols-[1fr_2fr_1fr] 2xl:grid-cols-3">
               <div></div>
               <div className="mt-5 grid grid-cols-[5fr_1fr] gap-3">
                 <div>

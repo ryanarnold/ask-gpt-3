@@ -73,7 +73,7 @@ const RegisterPage = (props: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="h-screen bg-slate-300">
-        <div className="grid grid-cols-3">
+        <div className="grid md:grid-cols-[1fr_2fr_1fr] lg:grid-cols-3">
           <div></div>
           <div>
             <div className="mt-20 rounded-xl bg-white px-16 py-16 drop-shadow-md">
