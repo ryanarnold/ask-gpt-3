@@ -2,10 +2,12 @@ import axios from 'axios';
 import { User } from 'firebase/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { isAuthenticated, logout } from '../common/auth';
 import logError from '../common/log-error';
 import Button from '../components/button';
+import ChatBubble from '../components/chat-bubble';
+import Heading from '../components/heading';
 import TextInput from '../components/text-input';
 import AuthContext from '../contexts/auth-context';
 import useMessages from '../hooks/use-messages';
@@ -18,6 +20,8 @@ const ChatPage = (props: Props) => {
   const [messages, fetchMessages, appendMessage] = useMessages(user);
 
   const router = useRouter();
+
+  const chatLog = useRef<HTMLDivElement>(null);
 
   // Check if user is authenticated, if not, redirect to /login
   useEffect(() => {
@@ -50,6 +54,7 @@ const ChatPage = (props: Props) => {
   };
 
   const handleMessageSend = async () => {
+    scrollChatLog();
     appendMessage(message);
     setMessage('');
     fetchGptResponse();
@@ -61,6 +66,17 @@ const ChatPage = (props: Props) => {
     });
   };
 
+  const scrollChatLog = () => {
+    if (chatLog.current) {
+      const scroll = chatLog.current?.scrollHeight - chatLog.current?.clientHeight;
+      chatLog.current?.scrollTo(0, scroll);
+    }
+  };
+
+  useEffect(() => {
+    scrollChatLog();
+  }, [chatLog.current]);
+
   if (user) {
     return (
       <>
@@ -70,27 +86,61 @@ const ChatPage = (props: Props) => {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main>
-          <h1 className="text-5xl">Chat Page</h1>
-          <Button clickHandler={handleLogout} text="Send" />
-          <div>
+        <main className="h-screen ">
+          <div className="fixed top-0 grid w-full grid-cols-3">
+            <div></div>
             <div>
-              <TextInput
-                placeholder="Type a message..."
-                value={message}
-                changeHandler={handleMessageChange}
-                sendHandler={handlePressEnter}
-              />
-
-              <Button clickHandler={handleMessageSend} text="Send" />
-            </div>
-            <div>
-              {messages?.map((msg) => (
-                <div key={msg.id}>
-                  <p>{msg.content}</p>
+              <div className=" top-0 my-5 grid grid-cols-[3fr_1fr]">
+                <div>
+                  <h1 className="text-3xl font-bold">Chat with GPT-3</h1>
                 </div>
-              ))}
+                <div>
+                  <button
+                    className="text-md w-full rounded-lg bg-slate-100 p-3"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+              <div></div>
             </div>
+          </div>
+          <div className="fixed top-10 grid h-full w-full grid-cols-3">
+            <div className="h-full "></div>
+            <div className="h-full ">
+              <div className="mt-20 h-full " ref={chatLog}>
+                {messages.length > 0 ? (
+                  messages?.map((msg) => (
+                    <ChatBubble key={msg.id} text={msg.content} isGpt={msg.isGptResponse} />
+                  ))
+                ) : (
+                  <div className="m-auto flex h-full">
+                    <p className="m-auto text-lg text-slate-300">Chat with GPT-3!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div></div>
+          </div>
+          <div className="fixed bottom-0 mb-5 w-screen bg-white">
+            <div className="grid grid-cols-3">
+              <div></div>
+              <div className="mt-5 grid grid-cols-[5fr_1fr] gap-3">
+                <div>
+                  <TextInput
+                    placeholder="Type a message..."
+                    value={message}
+                    changeHandler={handleMessageChange}
+                    sendHandler={handlePressEnter}
+                  />
+                </div>
+                <div>
+                  <Button clickHandler={handleMessageSend} text="Send" />
+                </div>
+              </div>
+            </div>
+            <div></div>
           </div>
         </main>
       </>

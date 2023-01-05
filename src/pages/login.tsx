@@ -52,7 +52,7 @@ const LoginPage = (props: Props) => {
           <div>
             <div className="mt-20 rounded-xl bg-white px-16 py-16 drop-shadow-md">
               <Heading text="Login" />
-              <div>
+              <div className="mb-3">
                 <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
               </div>
               <div>

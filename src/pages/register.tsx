@@ -76,8 +76,12 @@ const RegisterPage = (props: Props) => {
             <div className="mt-20 rounded-xl bg-white px-16 py-16 drop-shadow-md">
               <Heading text="Register" />
 
-              <TextInput placeholder="Name" value={name} changeHandler={handleNameChange} />
-              <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
+              <div className="mb-3">
+                <TextInput placeholder="Name" value={name} changeHandler={handleNameChange} />
+              </div>
+              <div className="mb-5">
+                <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
+              </div>
               <TextInput
                 placeholder="Password"
                 value={password}
