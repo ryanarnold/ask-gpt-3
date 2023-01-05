@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { login } from '../common/auth';
 import Button from '../components/button';
+import Heading from '../components/heading';
 import TextInput from '../components/text-input';
 
 type Props = {};
@@ -14,17 +15,6 @@ const LoginPage = (props: Props) => {
   const [error, setError] = useState('');
 
   const router = useRouter();
-
-  // const handleLoginInfoChange = (event: React.FormEvent<HTMLInputElement>) => {
-  //   const id = event.currentTarget?.id;
-  //   const value = event.currentTarget?.value;
-
-  //   if (id === 'inputEmail') {
-  //     setEmail(value);
-  //   } else if (id === 'inputPassword') {
-  //     setPassword(value);
-  //   }
-  // };
 
   const handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
     setEmail(event.currentTarget?.value);
@@ -56,18 +46,34 @@ const LoginPage = (props: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1 className="text-5xl">Login</h1>
-        <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          changeHandler={handlePasswordChange}
-          password={true}
-        />
-        <Button clickHandler={handleClickLogin} text="Login" />
-        <Button isLink={true} href="/register" text="Register" />
-        {error ? <p>{error}</p> : null}
+      <main className="h-screen bg-slate-300">
+        <div className="grid grid-cols-3">
+          <div></div>
+          <div>
+            <div className="mt-20 rounded-xl bg-white px-16 py-16 drop-shadow-md">
+              <Heading text="Login" />
+              <div>
+                <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
+              </div>
+              <div>
+                <TextInput
+                  placeholder="Password"
+                  value={password}
+                  changeHandler={handlePasswordChange}
+                  password={true}
+                />
+              </div>
+              {error ? <p className="text-red-500">{error}</p> : null}
+              <div className="mt-5 mb-2">
+                <Button clickHandler={handleClickLogin} text="Login" />
+              </div>
+              <div>
+                <Button isLink={true} href="/register" text="Register" />
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </div>
       </main>
     </>
   );

@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { register } from '../common/auth';
 import Button from '../components/button';
+import Heading from '../components/heading';
+import TextInput from '../components/text-input';
 
 type Props = {};
 
@@ -15,17 +17,29 @@ const RegisterPage = (props: Props) => {
 
   const router = useRouter();
 
-  const handleRegisterInfoChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const id = event.currentTarget?.id;
-    const value = event.currentTarget?.value;
+  // const handleRegisterInfoChange = (event: React.FormEvent<HTMLInputElement>) => {
+  //   const id = event.currentTarget?.id;
+  //   const value = event.currentTarget?.value;
 
-    if (id === 'inputName') {
-      setName(value);
-    } else if (id === 'inputEmail') {
-      setEmail(value);
-    } else if (id === 'inputPassword') {
-      setPassword(value);
-    }
+  //   if (id === 'inputName') {
+  //     setName(value);
+  //   } else if (id === 'inputEmail') {
+  //     setEmail(value);
+  //   } else if (id === 'inputPassword') {
+  //     setPassword(value);
+  //   }
+  // };
+
+  const handleNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setName(event.currentTarget?.value);
+  };
+
+  const handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setEmail(event.currentTarget?.value);
+  };
+
+  const handlePasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setPassword(event.currentTarget?.value);
   };
 
   const handleRegisterClick = async () => {
@@ -55,24 +69,33 @@ const RegisterPage = (props: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1 className="text-5xl">Register</h1>
-        <input type="text" placeholder="Name" id="inputName" onChange={handleRegisterInfoChange} />
-        <input
-          type="text"
-          placeholder="Email"
-          id="inputEmail"
-          onChange={handleRegisterInfoChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          id="inputPassword"
-          onChange={handleRegisterInfoChange}
-        />
-        <Button text="Register" clickHandler={handleRegisterClick} />
-        <Button isLink={true} href="/login" text="Login" />
-        {error ? <p>{error}</p> : null}
+      <main className="h-screen bg-slate-300">
+        <div className="grid grid-cols-3">
+          <div></div>
+          <div>
+            <div className="mt-20 rounded-xl bg-white px-16 py-16 drop-shadow-md">
+              <Heading text="Register" />
+
+              <TextInput placeholder="Name" value={name} changeHandler={handleNameChange} />
+              <TextInput placeholder="Email" value={email} changeHandler={handleEmailChange} />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                changeHandler={handlePasswordChange}
+                password={true}
+              />
+
+              {error ? <p>{error}</p> : null}
+              <div className="mt-5 mb-2">
+                <Button text="Register" clickHandler={handleRegisterClick} />
+              </div>
+              <div>
+                <Button isLink={true} href="/login" text="Login" />
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </div>
       </main>
     </>
   );
