@@ -35,12 +35,19 @@ const ChatPage = (props: Props) => {
     );
   }, [router, setUser]);
 
+  useEffect(() => {
+    scrollChatLog();
+  }, [messages]);
+
   // Generate a ChatGPT response after every message from the user
   const fetchGptResponse = () => {
     axios
       .post(`/api/user/${user?.uid}/response`, { prompt: message })
       .then(fetchMessages)
-      .catch(logError);
+      .catch(logError)
+      .finally(() => {
+        scrollChatLog();
+      });
   };
 
   const handleMessageChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -54,7 +61,6 @@ const ChatPage = (props: Props) => {
   };
 
   const handleMessageSend = async () => {
-    scrollChatLog();
     appendMessage(message);
     setMessage('');
     fetchGptResponse();
@@ -69,7 +75,8 @@ const ChatPage = (props: Props) => {
   const scrollChatLog = () => {
     if (chatLog.current) {
       const scroll = chatLog.current?.scrollHeight - chatLog.current?.clientHeight;
-      chatLog.current?.scrollTo(0, scroll);
+      chatLog.current?.scrollTo(0, chatLog.current?.scrollHeight);
+      // chatLog.current.scrollTop = chatLog.current?.scrollHeight;
     }
   };
 
@@ -88,7 +95,7 @@ const ChatPage = (props: Props) => {
         </Head>
         <main className="h-screen ">
           <div
-            className="fixed top-10 grid h-[92%] w-full overflow-y-scroll xl:grid-cols-[1fr_2fr_1fr] 2xl:grid-cols-3"
+            className="fixed top-10 grid h-[90%] w-full overflow-y-scroll xl:grid-cols-[1fr_2fr_1fr] 2xl:grid-cols-3"
             ref={chatLog}
           >
             <div></div>
